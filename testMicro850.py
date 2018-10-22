@@ -1,3 +1,4 @@
+site.addsitedir(sys.path[0]+'/lib')
 from eip import PLC
 import datetime
 from threading import Timer
