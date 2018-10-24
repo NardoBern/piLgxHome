@@ -9,6 +9,29 @@ import datetime
 from threading import Timer
 from db_manager import database_engine
 
+def numbersToDay(dayOfWeek):
+    switcher = {
+        0: "lunedi",
+        1: "martedi",
+        2: "mercoledi",
+        3: "giovedi",
+        4: "venerdi",
+        5: "sabato",
+        6: "domenica",
+    }
+    return switcher.get(dayOfWeek, lambda: "Giorno non valido")
+
+def readAutoHeatData(dayOfWeek):
+    print "Funzione di lettura dati riscaldamento automatico del giorno: " + numbersToDay(dayOfWeek)
+    #####################################################
+    #### LETTURA DATI RISCALDAMENTO BAGNO AUTOMATICO ####
+    #####################################################
+    nuovi_dati = data_commands.lettura_dato_multiplo('automatico_riscaldamentoBagno',numbersToDay(dayOfWeek))
+    #### TOBEDONE: definire una classe riscaldamento ####
+    riscaldamentoBagno_ricettaAttuale = []
+    for row in nuovi_dati:
+        riscaldamentoBagno_ricettaAttuale.append(row[0])
+    print riscaldamentoBagno_ricettaAttuale
 
 def checkForNew():
     #######################################
@@ -31,6 +54,8 @@ def checkForNew():
     if test_nuovo_comando == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','1',0)
         data_commands.salva_dati()
+        #### Chiamata alla funzione di lettura dei dati di riscaldamento automatico ####
+        readAutoHeatData(system.giornoSettimana)
     if test_nuovo_configurazione == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','2',0)
         data_commands.salva_dati()
