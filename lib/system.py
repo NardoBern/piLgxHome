@@ -7,6 +7,7 @@ class System:
         self.minuto = 0
         self.secondo = 0
         self.giorno = 0
+        self.giornoOld = 0
         self.mese = 0
         self.anno = 0
         self.giornoSettimana = 0
