@@ -74,6 +74,15 @@ def readHeatManTimer(databaseObj):
         contatori.append(row[0])
     return contatori
 
+## Funzione di lettura comandi manuali luci da HMI ##
+def readManHmiLampCmds(databaseObj):
+    print 'Leggo i comandi manuali per le luci da HMI...'
+    nuovi_comandi = databaseObj.lettura_dato_multiplo('comandi_luci','COMANDO')
+    comandi = []
+    for row in nuovi_comandi:
+        comandi.append(row[0])
+    return comandi
+
 ## Funzione di scrittura modalita riscaldamento ##
 def writeHeatModalState(databaseObj,zonaBagno,zonaNotte,zonaGiorno):
     print 'RISCALDAMENTO BAGNO'
@@ -117,3 +126,48 @@ def writeHeatTimeOut(databaseObj,zonaBagno,zonaNotte,zonaGiorno):
 def saveModify(databaseObj):
     print 'Salvo i dati sul database...'
     databaseObj.salva_dati()
+
+def writeLampState(databaseObj,veranda,cantina,cucina,sala,ingresso,corridoio,antibagno,bagno,salaLibreria,cameraLetto,fuoriDavanti):
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_sala',sala)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CORRIDOIO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_corridoio',corridoio)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE INGRESSO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_ingresso',ingresso)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE BAGNO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_bagno',bagno)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE VERANDA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_veranda',veranda)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CUCINA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_cucina',cucina)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE ANTIBAGNO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_antibagno',antibagno)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA LIBRERIA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_sala_libreria',salaLibreria)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CAMERA LETTO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_camera_letto',cameraLetto)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE FUORI DAVANTI -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','STATO','luce_fuori_davanti',fuoriDavanti)
+
+def writeLampModalState(databaseObj,veranda,cantina,cucina,sala,ingresso,corridoio,antibagno,bagno,salaLibreria,cameraLetto,fuoriDavanti):
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala',sala)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CORRIDOIO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_corridoio',corridoio)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE INGRESSO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_ingresso',ingresso)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE BAGNO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_bagno',bagno)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE VERANDA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_veranda',veranda)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CUCINA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_cucina',cucina)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE ANTIBAGNO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_antibagno',antibagno)        
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA LIBRERIA -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala_libreria',salaLibreria)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CAMERA LETTO -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_camera_letto',cameraLetto)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE FUORI DAVANTI -- STATO'
+    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_fuori_davanti',fuoriDavanti)
+    

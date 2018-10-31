@@ -13,9 +13,70 @@ from db_manager import database_engine
 import writeToPLC
 import dbInterface
 import cZonaRiscaldamento
+import cLamp
 import counter
 import readFromPLC
 import cCheckSums
+
+def checkForNewLampCmd():
+    print 'Chiamata alla funzione checkForNewLampCmd'
+    if luceAntibagno.manHmiCmd != luceAntibagno.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",False)
+    if luceBagno.manHmiCmd != luceBagno.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",False)
+    if luceCantina.manHmiCmd != luceCantina.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",False)
+    if luceCorridoio.manHmiCmd != luceCorridoio.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",False)
+    if luceCucina.manHmiCmd != luceCucina.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",False)
+    if luceFuoriDavanti.manHmiCmd != luceFuoriDavanti.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",False)
+    if luceIngresso.manHmiCmd != luceIngresso.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",False)
+    if luceLetto.manHmiCmd != luceLetto.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",False)
+    if luceSala.manHmiCmd != luceSala.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",False)
+    if luceSalaLibreria.manHmiCmd != luceSalaLibreria.manHmiCmdOld:
+        print "Luce Sala Libreria = True..."
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",False)
+    if luceVeranda.manHmiCmd != luceVeranda.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",True)
+    else:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",False)
+    luceAntibagno.manHmiCmdOld = luceAntibagno.manHmiCmd
+    luceBagno.manHmiCmdOld = luceBagno.manHmiCmd
+    luceCantina.manHmiCmdOld = luceCantina.manHmiCmd
+    luceCorridoio.manHmiCmdOld = luceCorridoio.manHmiCmd
+    luceCucina.manHmiCmdOld = luceCucina.manHmiCmd
+    luceFuoriDavanti.manHmiCmdOld = luceFuoriDavanti.manHmiCmd
+    luceIngresso.manHmiCmdOld = luceIngresso.manHmiCmd
+    luceLetto.manHmiCmdOld = luceLetto.manHmiCmd
+    luceSala.manHmiCmdOld = luceSala.manHmiCmd
+    luceSalaLibreria.manHmiCmdOld = luceSalaLibreria.manHmiCmd
+    luceVeranda.manHmiCmdOld = luceVeranda.manHmiCmd
+
 
 def checkForNew():
     update = dbInterface.checkForNewCommands(data_commands)
@@ -56,6 +117,24 @@ def checkForNew():
         riscaldamentoGiorno.manTimeOut = timeOut[2] * 60 * 1000
         #### Chiamata alla funzione di scrittura dei time-out manuali riscaldamento nel PLC ####
         writeToPLC.writeManHeatTimerToPLC(lgxPLC,riscaldamentoBagno.manTimeOut,riscaldamentoGiorno.manTimeOut,riscaldamentoNotte.manTimeOut)
+        #### Chiamata alla funzione di lettura comandi manuali luci da HMI ####
+        comandiLuce = []
+        comandiLuce = dbInterface.readManHmiLampCmds(data_commands)
+        luceVeranda.manHmiCmd = comandiLuce[0]
+        luceCucina.manHmiCmd = comandiLuce[1]
+        luceAntibagno.manHmiCmd = comandiLuce[2]
+        luceSalaLibreria.manHmiCmd = comandiLuce[3]
+        print "Comando luce sala libreria: " + str( luceSalaLibreria.manHmiCmd )
+        luceLetto.manHmiCmd = comandiLuce[4]
+        luceCorridoio.manHmiCmd = comandiLuce[5]
+        luceSala.manHmiCmd = comandiLuce[6]
+        luceIngresso.manHmiCmd = comandiLuce[7]
+        luceBagno.manHmiCmd = comandiLuce[8]
+        luceFuoriDavanti.manHmiCmd = comandiLuce[9]
+    #### Chiamata alla funzione di controllo se ho un nuovo comando luce da HMI ####
+    checkForNewLampCmd()
+
+
     if test_nuovo_configurazione == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','2',0)
         data_commands.salva_dati()
@@ -75,6 +154,7 @@ def checkForNewDay():
     system.giornoOld = system.giorno
 
 def readDataFromPLC():
+    print "Lettura dati riscaldamento..."
     modalita = []
     modalita = readFromPLC.readHeatModalState(lgxPLC)
     stati = []
@@ -91,6 +171,23 @@ def readDataFromPLC():
         dbInterface.writeHeatState(data_store,stati[0],stati[1],stati[2])
         dbInterface.saveModify(data_store)
     checkSums.riscaldamentoStatiOld = checkSums.riscaldamentoStati
+    print "Lettura dati luci..."
+    stati = []
+    stati = readFromPLC.readLampState(lgxPLC)
+    checkSums.luciStati = checkSums.calculateCheckSums(stati)
+    print 'CheckSum stati luci: ' + str(checkSums.luciStati)
+    if checkSums.luciStati != checkSums.luciStatiOld:
+        dbInterface.writeLampState(data_store,stati[0],stati[1],stati[2],stati[3],stati[4],stati[5],stati[6],stati[7],stati[8],stati[9],stati[10])
+        dbInterface.saveModify(data_store)
+    checkSums.luciStatiOld = checkSums.luciStati
+    modalita = []
+    modalita = readFromPLC.readLampModalState(lgxPLC)
+    checkSums.luciModalita = checkSums.calculateCheckSums(modalita)
+    print "CheckSum modalita luci: " + str(checkSums.luciModalita)
+    if checkSums.luciModalita != checkSums.luciModalitaOld:
+        dbInterface.writeLampModalState(data_store,modalita[0],modalita[1],modalita[2],modalita[3],modalita[4],modalita[5],modalita[6],modalita[7],modalita[8],modalita[9],modalita[10])
+        dbInterface.saveModify(data_store)
+    checkSums.luciModalitaOld = checkSums.luciModalita
     
 def oneSecondInterrupt():
     print "Funzione di interrupt ad 1sec."
@@ -175,6 +272,23 @@ try:
     checkSums = cCheckSums.cChekSums()
 except Exception,e:
     print 'Errore inizializzazione checksums'
+    print e
+#### Inizializzazione punti luce ####
+try:
+    print 'Inizializzazione punti luce'
+    luceVeranda = cLamp.puntoLuce()
+    luceCucina = cLamp.puntoLuce()
+    luceSala = cLamp.puntoLuce()
+    luceIngresso = cLamp.puntoLuce()
+    luceCorridoio = cLamp.puntoLuce()
+    luceAntibagno = cLamp.puntoLuce()
+    luceBagno = cLamp.puntoLuce()
+    luceLetto = cLamp.puntoLuce()
+    luceSalaLibreria = cLamp.puntoLuce()
+    luceFuoriDavanti = cLamp.puntoLuce()
+    luceCantina = cLamp.puntoLuce()
+except Exception,e:
+    print 'Errore inizializzazione punti luce'
     print e
 #### FINE CICLO INIZIALIZZAZIONE ####
 print 'Fine ciclo inizializzazione...'

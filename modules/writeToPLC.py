@@ -52,3 +52,6 @@ def writeManHeatTimerToPLC(PlcConnection,zonaBagno,zonaGiorno,zonaNotte):
     PlcConnection.Write("i_stZonaAManCmd.iManTime",zonaNotte)
     PlcConnection.Write("i_stZonaBManCmd.iManTime",zonaBagno)
     PlcConnection.Write("i_stZonaCManCmd.iManTime",zonaGiorno)
+
+def writeLampManCmdToPLC(PlcConnection,tag,value):
+    PlcConnection.Write(tag,value)

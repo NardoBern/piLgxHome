@@ -7,7 +7,11 @@ class cChekSums:
         self.riscaldamentoModal = 0
         self.riscaldamentoModalOld = 0
         self.riscaldamentoTimeOut = 0
-        self.riscaldamentoTimeOutOld
+        self.riscaldamentoTimeOutOld = 0
+        self.luciStati = 0
+        self.luciStatiOld = 0
+        self.luciModalita = 0
+        self.luciModalitaOld = 0
     
     ## Funzione di calcolo del checkSum ##
     def calculateCheckSums(self,data):
