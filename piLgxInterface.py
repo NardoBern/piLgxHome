@@ -18,65 +18,20 @@ import counter
 import readFromPLC
 import cCheckSums
 
-def checkForNewLampCmd():
-    print 'Chiamata alla funzione checkForNewLampCmd'
-    if luceAntibagno.manHmiCmd != luceAntibagno.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",False)
-    if luceBagno.manHmiCmd != luceBagno.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",False)
-    if luceCantina.manHmiCmd != luceCantina.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",False)
-    if luceCorridoio.manHmiCmd != luceCorridoio.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",False)
-    if luceCucina.manHmiCmd != luceCucina.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",False)
-    if luceFuoriDavanti.manHmiCmd != luceFuoriDavanti.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",False)
-    if luceIngresso.manHmiCmd != luceIngresso.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",False)
-    if luceLetto.manHmiCmd != luceLetto.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",False)
-    if luceSala.manHmiCmd != luceSala.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",False)
-    if luceSalaLibreria.manHmiCmd != luceSalaLibreria.manHmiCmdOld:
-        print "Luce Sala Libreria = True..."
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",False)
-    if luceVeranda.manHmiCmd != luceVeranda.manHmiCmdOld:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",True)
-    else:
-        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",False)
-    luceAntibagno.manHmiCmdOld = luceAntibagno.manHmiCmd
-    luceBagno.manHmiCmdOld = luceBagno.manHmiCmd
-    luceCantina.manHmiCmdOld = luceCantina.manHmiCmd
-    luceCorridoio.manHmiCmdOld = luceCorridoio.manHmiCmd
-    luceCucina.manHmiCmdOld = luceCucina.manHmiCmd
-    luceFuoriDavanti.manHmiCmdOld = luceFuoriDavanti.manHmiCmd
-    luceIngresso.manHmiCmdOld = luceIngresso.manHmiCmd
-    luceLetto.manHmiCmdOld = luceLetto.manHmiCmd
-    luceSala.manHmiCmdOld = luceSala.manHmiCmd
-    luceSalaLibreria.manHmiCmdOld = luceSalaLibreria.manHmiCmd
-    luceVeranda.manHmiCmdOld = luceVeranda.manHmiCmd
-
+def applyHmiLampCmds():
+    print 'Chiamata alla funzione applyHmiLampCmds'
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",luceAntibagno.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",luceBagno.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",luceCantina.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",luceCorridoio.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",luceCucina.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",luceFuoriDavanti.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",luceIngresso.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",luceLetto.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",luceSala.manHmiCmd)
+    print "Luce Sala Libreria = True..."
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",luceSalaLibreria.manHmiCmd)
+    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",luceVeranda.manHmiCmd)
 
 def checkForNew():
     update = dbInterface.checkForNewCommands(data_commands)
@@ -131,10 +86,9 @@ def checkForNew():
         luceIngresso.manHmiCmd = comandiLuce[7]
         luceBagno.manHmiCmd = comandiLuce[8]
         luceFuoriDavanti.manHmiCmd = comandiLuce[9]
-    #### Chiamata alla funzione di controllo se ho un nuovo comando luce da HMI ####
-    checkForNewLampCmd()
-
-
+        #### Chiamata alla funzione di applicazione dei comandi luce da HMI ####
+        applyHmiLampCmds()
+    
     if test_nuovo_configurazione == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','2',0)
         data_commands.salva_dati()
