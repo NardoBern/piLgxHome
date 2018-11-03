@@ -83,6 +83,24 @@ def readManHmiLampCmds(databaseObj):
         comandi.append(row[0])
     return comandi
 
+## Funzione di lettura modalita luci da HMI ##
+def readManHmiLampModalita(databaseObj):
+    print 'Leggo le modalita luci impostate da HMI...'
+    nuovi_comandi = databaseObj.lettura_dato_multiplo('comandi_luci','AUTOMATICO')
+    comandi = []
+    for row in nuovi_comandi:
+        comandi.append(row[0])
+    return comandi
+
+## Funzione di lettura set contatori automatici da HMI ##
+def readLampAutoTimeOut(databaseObj):
+    print 'Leggo i time-out comandi automatici impostati da HMI...'
+    nuovi_timeOut = databaseObj.lettura_dato_multiplo('comandi_luci','SET_CONTATORE_AUTO')
+    timeOut = []
+    for row in nuovi_timeOut:
+        timeOut.append(row[0])
+    return timeOut
+
 ## Funzione di scrittura modalita riscaldamento ##
 def writeHeatModalState(databaseObj,zonaBagno,zonaNotte,zonaGiorno):
     print 'RISCALDAMENTO BAGNO'
@@ -150,24 +168,54 @@ def writeLampState(databaseObj,veranda,cantina,cucina,sala,ingresso,corridoio,an
     databaseObj.scrittura_singola_db('punti_luce','STATO','luce_fuori_davanti',fuoriDavanti)
 
 def writeLampModalState(databaseObj,veranda,cantina,cucina,sala,ingresso,corridoio,antibagno,bagno,salaLibreria,cameraLetto,fuoriDavanti):
-    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala',sala)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE CORRIDOIO -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_corridoio',corridoio)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE INGRESSO -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_ingresso',ingresso)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE BAGNO -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_bagno',bagno)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE VERANDA -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_veranda',veranda)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE CUCINA -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_cucina',cucina)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE ANTIBAGNO -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_antibagno',antibagno)        
-    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA LIBRERIA -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala_libreria',salaLibreria)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE CAMERA LETTO -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_camera_letto',cameraLetto)
-    print 'AGGIORNAMENTO DATASTORE @ LUCE FUORI DAVANTI -- STATO'
-    databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_fuori_davanti',fuoriDavanti)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA -- MODALITA'
+    if sala == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CORRIDOIO -- MODALITA'
+    if corridoio == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_corridoio',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_corridoio',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE INGRESSO -- MODALITA'
+    if ingresso == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_ingresso',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_ingresso',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE BAGNO -- MODALITA'
+    if bagno == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_bagno',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_bagno',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE VERANDA -- MODALITA'
+    if veranda == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_veranda',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_veranda',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CUCINA -- MODALITA'
+    if cucina == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_cucina',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_cucina',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE ANTIBAGNO -- MODALITA'
+    if antibagno == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_antibagno',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_antibagno',0)        
+    print 'AGGIORNAMENTO DATASTORE @ LUCE SALA LIBRERIA -- MODALITA'
+    if salaLibreria == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala_libreria',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_sala_libreria',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE CAMERA LETTO -- MODALITA'
+    if cameraLetto == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_camera_letto',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_camera_letto',0)
+    print 'AGGIORNAMENTO DATASTORE @ LUCE FUORI DAVANTI -- MODALITA'
+    if fuoriDavanti == 2:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_fuori_davanti',1)
+    else:
+        databaseObj.scrittura_singola_db('punti_luce','AUTOMATICO','luce_fuori_davanti',0)
     

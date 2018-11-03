@@ -55,3 +55,24 @@ def writeManHeatTimerToPLC(PlcConnection,zonaBagno,zonaGiorno,zonaNotte):
 
 def writeLampManCmdToPLC(PlcConnection,tag,value):
     PlcConnection.Write(tag,value)
+
+def writeLampModalToPLC(PlcConnection,tag,value):
+    if value == 1:
+        PlcConnection.Write(tag,2)
+    elif value == 0:
+        PlcConnection.Write(tag,0)
+    else:
+        PlcConnection.Write(tag,1)
+
+def writeLampTimeOutToPLC(PlcConnection,timeOut):
+    print 'Chiamata alla funzione di scrittura timeOut luci in automatico...'
+    PlcConnection.Write("i_stLuceAntiBagnoHmiCmds.diAutoTime",timeOut[2])
+    PlcConnection.Write("i_stLuceBagnoHmiCmds.diAutoTime",timeOut[8])
+    PlcConnection.Write("i_stLuceCorridoioHmiCmds.diAutoTime",timeOut[5])
+    PlcConnection.Write("i_stLuceCucinaHmiCmds.diAutoTime",timeOut[1])
+    PlcConnection.Write("i_stLuceFuoriDavantiHmiCmds.diAutoTime",timeOut[9])
+    PlcConnection.Write("i_stLuceIngressoHmiCmds.diAutoTime",timeOut[7])
+    PlcConnection.Write("i_stLuceCameraLettoHmiCmds.diAutoTime",timeOut[4])
+    PlcConnection.Write("i_stLuceSalaHmiCmds.diAutoTime",timeOut[6])
+    PlcConnection.Write("i_stLuceSalaLibreriaHmiCmds.diAutoTime",timeOut[3])
+    PlcConnection.Write("i_stLuceVerandaHmiCmds.iModeSel",timeOut[0])

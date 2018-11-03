@@ -19,7 +19,7 @@ import readFromPLC
 import cCheckSums
 
 def applyHmiLampCmds():
-    print 'Chiamata alla funzione applyHmiLampCmds'
+    print 'Chiamata alla funzione applyHmiLampCmds...'
     writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",luceAntibagno.manHmiCmd)
     writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",luceBagno.manHmiCmd)
     writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",luceCantina.manHmiCmd)
@@ -32,6 +32,20 @@ def applyHmiLampCmds():
     print "Luce Sala Libreria = True..."
     writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",luceSalaLibreria.manHmiCmd)
     writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",luceVeranda.manHmiCmd)
+
+def applyHmiLampModal():
+    print 'Chiamata alla funzione applyHmiLampModal...'
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.iModeSel",luceAntibagno.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.iModeSel",luceBagno.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.iModeSel",luceCantina.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.iModeSel",luceCorridoio.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.iModeSel",luceCucina.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.iModeSel",luceFuoriDavanti.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.iModeSel",luceIngresso.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.iModeSel",luceLetto.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceSalaHmiCmds.iModeSel",luceSala.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.iModeSel",luceSalaLibreria.automatico)
+    writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.iModeSel",luceVeranda.automatico)
 
 def checkForNew():
     update = dbInterface.checkForNewCommands(data_commands)
@@ -88,6 +102,37 @@ def checkForNew():
         luceFuoriDavanti.manHmiCmd = comandiLuce[9]
         #### Chiamata alla funzione di applicazione dei comandi luce da HMI ####
         applyHmiLampCmds()
+        #### Chiamata alla funzione di lettura modalita luci da HMI ####
+        modalitaLuce = []
+        modalitaLuce = dbInterface.readManHmiLampModalita(data_commands)
+        luceVeranda.automatico = modalitaLuce[0]
+        luceCucina.automatico = modalitaLuce[1]
+        luceAntibagno.automatico = modalitaLuce[2]
+        luceSalaLibreria.automatico = modalitaLuce[3]
+        luceLetto.automatico = modalitaLuce[4]
+        luceCorridoio.automatico = modalitaLuce[5]
+        luceSala.automatico = modalitaLuce[6]
+        luceIngresso.automatico = modalitaLuce[7]
+        luceBagno.automatico = modalitaLuce[8]
+        luceFuoriDavanti.automatico = modalitaLuce[9]
+        #### Chiamata alla funzione di scrittura delle modalita luci su PLC ####
+        applyHmiLampModal()
+        #### Chiamata alla funzione di lettura dei time-out automatici ####
+        timeOut = []
+        timeOut = dbInterface.readLampAutoTimeOut(data_commands)
+        luceVeranda.timeOut = timeOut[0] * 1000
+        luceCucina.timeOut = timeOut[1] * 1000
+        luceAntibagno.timeOut = timeOut[2] * 1000
+        luceSalaLibreria.timeOut = timeOut[3] * 1000
+        luceLetto.timeOut = timeOut[4] * 1000
+        luceCorridoio.timeOut = timeOut[5] * 1000
+        luceSala.timeOut = timeOut[6] * 1000
+        luceIngresso.timeOut = timeOut[7] * 1000
+        luceBagno.timeOut = timeOut[8] * 1000
+        luceFuoriDavanti.timeOut = timeOut[9] * 1000
+        #### Chiamata alla funzione di scrittura timeOut sul PLC ####
+        writeToPLC.writeLampTimeOutToPLC(lgxPLC,timeOut)
+
     
     if test_nuovo_configurazione == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','2',0)
