@@ -10,6 +10,7 @@ from system import System
 import datetime
 from threading import Timer
 from db_manager import database_engine
+from gestore_orologio import orologio
 import writeToPLC
 import dbInterface
 import cZonaRiscaldamento
@@ -47,6 +48,85 @@ def applyHmiLampModal():
     writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.iModeSel",luceSalaLibreria.automatico)
     writeToPLC.writeLampModalToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.iModeSel",luceVeranda.automatico)
 
+def readAndApplyCommands():
+    #### Chiamata alla funzione di lettura dei dati di riscaldamento automatico ####
+    riscaldamentoBagno.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoBagno')
+    riscaldamentoGiorno.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoGiorno')
+    riscaldamentoNotte.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoNotte')
+    #### Chiamata alla funzione di scrittura dei dati di riscaldamento automatico nel plc ####
+    writeToPLC.writeAutoHeatDataToPLC(lgxPLC,riscaldamentoBagno.autoSet,riscaldamentoGiorno.autoSet,riscaldamentoNotte.autoSet)
+    #### Chiamata alla funzione di lettura degli stati Auto/Man del riscaldamento ####
+    stati = []
+    stati = dbInterface.readAutoManHeat(data_commands)
+    riscaldamentoBagno.automatico = stati[0]
+    riscaldamentoNotte.automatico = stati[1]
+    riscaldamentoGiorno.automatico = stati[2]
+    #### Chiamata alla funzione di scrittura degli stati auto/man nel plc ###
+    writeToPLC.writeAutoManToPLC(lgxPLC,riscaldamentoBagno.automatico,riscaldamentoGiorno.automatico,riscaldamentoNotte.automatico)
+    #### Chiamata alla funzione di lettura dei comandi manuali riscaldamento ####
+    comandi = []
+    comandi = dbInterface.readHeatManCmd(data_commands)
+    riscaldamentoBagno.manCommand = comandi[0]
+    riscaldamentoNotte.manCommand = comandi[1]
+    riscaldamentoGiorno.manCommand = comandi[2]
+    #### Chiamata alla funzione di scrittura dei comandi manuali riscaldamento nel PLC ####
+    writeToPLC.writeManHeatCmdToPLC(lgxPLC,riscaldamentoBagno.manCommand,riscaldamentoGiorno.manCommand,riscaldamentoNotte.manCommand)
+    #### Chiamata alla funzione di lettura dei time-out riscaldamento manuale ####
+    timeOut = []
+    timeOut = dbInterface.readHeatManTimer(data_commands)
+    print timeOut
+    riscaldamentoBagno.manTimeOut = timeOut[0] * 60 * 1000
+    riscaldamentoNotte.manTimeOut = timeOut[1] * 60 * 1000
+    riscaldamentoGiorno.manTimeOut = timeOut[2] * 60 * 1000
+    #### Chiamata alla funzione di scrittura dei time-out manuali riscaldamento nel PLC ####
+    writeToPLC.writeManHeatTimerToPLC(lgxPLC,riscaldamentoBagno.manTimeOut,riscaldamentoGiorno.manTimeOut,riscaldamentoNotte.manTimeOut)
+    #### Chiamata alla funzione di lettura comandi manuali luci da HMI ####
+    comandiLuce = []
+    comandiLuce = dbInterface.readManHmiLampCmds(data_commands)
+    luceVeranda.manHmiCmd = comandiLuce[0]
+    luceCucina.manHmiCmd = comandiLuce[1]
+    luceAntibagno.manHmiCmd = comandiLuce[2]
+    luceSalaLibreria.manHmiCmd = comandiLuce[3]
+    print "Comando luce sala libreria: " + str( luceSalaLibreria.manHmiCmd )
+    luceLetto.manHmiCmd = comandiLuce[4]
+    luceCorridoio.manHmiCmd = comandiLuce[5]
+    luceSala.manHmiCmd = comandiLuce[6]
+    luceIngresso.manHmiCmd = comandiLuce[7]
+    luceBagno.manHmiCmd = comandiLuce[8]
+    luceFuoriDavanti.manHmiCmd = comandiLuce[9]
+    #### Chiamata alla funzione di applicazione dei comandi luce da HMI ####
+    applyHmiLampCmds()
+    #### Chiamata alla funzione di lettura modalita luci da HMI ####
+    modalitaLuce = []
+    modalitaLuce = dbInterface.readManHmiLampModalita(data_commands)
+    luceVeranda.automatico = modalitaLuce[0]
+    luceCucina.automatico = modalitaLuce[1]
+    luceAntibagno.automatico = modalitaLuce[2]
+    luceSalaLibreria.automatico = modalitaLuce[3]
+    luceLetto.automatico = modalitaLuce[4]
+    luceCorridoio.automatico = modalitaLuce[5]
+    luceSala.automatico = modalitaLuce[6]
+    luceIngresso.automatico = modalitaLuce[7]
+    luceBagno.automatico = modalitaLuce[8]
+    luceFuoriDavanti.automatico = modalitaLuce[9]
+    #### Chiamata alla funzione di scrittura delle modalita luci su PLC ####
+    applyHmiLampModal()
+    #### Chiamata alla funzione di lettura dei time-out automatici ####
+    timeOut = []
+    timeOut = dbInterface.readLampAutoTimeOut(data_commands)
+    luceVeranda.timeOut = timeOut[0] * 1000
+    luceCucina.timeOut = timeOut[1] * 1000
+    luceAntibagno.timeOut = timeOut[2] * 1000
+    luceSalaLibreria.timeOut = timeOut[3] * 1000
+    luceLetto.timeOut = timeOut[4] * 1000
+    luceCorridoio.timeOut = timeOut[5] * 1000
+    luceSala.timeOut = timeOut[6] * 1000
+    luceIngresso.timeOut = timeOut[7] * 1000
+    luceBagno.timeOut = timeOut[8] * 1000
+    luceFuoriDavanti.timeOut = timeOut[9] * 1000
+    #### Chiamata alla funzione di scrittura timeOut sul PLC ####
+    writeToPLC.writeLampTimeOutToPLC(lgxPLC,timeOut)
+
 def checkForNew():
     update = dbInterface.checkForNewCommands(data_commands)
     test_nuovo_comando = update[0]
@@ -55,83 +135,7 @@ def checkForNew():
     if test_nuovo_comando == 1:
         data_commands.scrittura_singola_db('update','NEED_UPDATE','1',0)
         data_commands.salva_dati()
-        #### Chiamata alla funzione di lettura dei dati di riscaldamento automatico ####
-        riscaldamentoBagno.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoBagno')
-        riscaldamentoGiorno.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoGiorno')
-        riscaldamentoNotte.autoSet = dbInterface.readAutoHeatData(data_commands,system.giornoSettimana,'automatico_riscaldamentoNotte')
-        #### Chiamata alla funzione di scrittura dei dati di riscaldamento automatico nel plc ####
-        writeToPLC.writeAutoHeatDataToPLC(lgxPLC,riscaldamentoBagno.autoSet,riscaldamentoGiorno.autoSet,riscaldamentoNotte.autoSet)
-        #### Chiamata alla funzione di lettura degli stati Auto/Man del riscaldamento ####
-        stati = []
-        stati = dbInterface.readAutoManHeat(data_commands)
-        riscaldamentoBagno.automatico = stati[0]
-        riscaldamentoNotte.automatico = stati[1]
-        riscaldamentoGiorno.automatico = stati[2]
-        #### Chiamata alla funzione di scrittura degli stati auto/man nel plc ###
-        writeToPLC.writeAutoManToPLC(lgxPLC,riscaldamentoBagno.automatico,riscaldamentoGiorno.automatico,riscaldamentoNotte.automatico)
-        #### Chiamata alla funzione di lettura dei comandi manuali riscaldamento ####
-        comandi = []
-        comandi = dbInterface.readHeatManCmd(data_commands)
-        riscaldamentoBagno.manCommand = comandi[0]
-        riscaldamentoNotte.manCommand = comandi[1]
-        riscaldamentoGiorno.manCommand = comandi[2]
-        #### Chiamata alla funzione di scrittura dei comandi manuali riscaldamento nel PLC ####
-        writeToPLC.writeManHeatCmdToPLC(lgxPLC,riscaldamentoBagno.manCommand,riscaldamentoGiorno.manCommand,riscaldamentoNotte.manCommand)
-        #### Chiamata alla funzione di lettura dei time-out riscaldamento manuale ####
-        timeOut = []
-        timeOut = dbInterface.readHeatManTimer(data_commands)
-        print timeOut
-        riscaldamentoBagno.manTimeOut = timeOut[0] * 60 * 1000
-        riscaldamentoNotte.manTimeOut = timeOut[1] * 60 * 1000
-        riscaldamentoGiorno.manTimeOut = timeOut[2] * 60 * 1000
-        #### Chiamata alla funzione di scrittura dei time-out manuali riscaldamento nel PLC ####
-        writeToPLC.writeManHeatTimerToPLC(lgxPLC,riscaldamentoBagno.manTimeOut,riscaldamentoGiorno.manTimeOut,riscaldamentoNotte.manTimeOut)
-        #### Chiamata alla funzione di lettura comandi manuali luci da HMI ####
-        comandiLuce = []
-        comandiLuce = dbInterface.readManHmiLampCmds(data_commands)
-        luceVeranda.manHmiCmd = comandiLuce[0]
-        luceCucina.manHmiCmd = comandiLuce[1]
-        luceAntibagno.manHmiCmd = comandiLuce[2]
-        luceSalaLibreria.manHmiCmd = comandiLuce[3]
-        print "Comando luce sala libreria: " + str( luceSalaLibreria.manHmiCmd )
-        luceLetto.manHmiCmd = comandiLuce[4]
-        luceCorridoio.manHmiCmd = comandiLuce[5]
-        luceSala.manHmiCmd = comandiLuce[6]
-        luceIngresso.manHmiCmd = comandiLuce[7]
-        luceBagno.manHmiCmd = comandiLuce[8]
-        luceFuoriDavanti.manHmiCmd = comandiLuce[9]
-        #### Chiamata alla funzione di applicazione dei comandi luce da HMI ####
-        applyHmiLampCmds()
-        #### Chiamata alla funzione di lettura modalita luci da HMI ####
-        modalitaLuce = []
-        modalitaLuce = dbInterface.readManHmiLampModalita(data_commands)
-        luceVeranda.automatico = modalitaLuce[0]
-        luceCucina.automatico = modalitaLuce[1]
-        luceAntibagno.automatico = modalitaLuce[2]
-        luceSalaLibreria.automatico = modalitaLuce[3]
-        luceLetto.automatico = modalitaLuce[4]
-        luceCorridoio.automatico = modalitaLuce[5]
-        luceSala.automatico = modalitaLuce[6]
-        luceIngresso.automatico = modalitaLuce[7]
-        luceBagno.automatico = modalitaLuce[8]
-        luceFuoriDavanti.automatico = modalitaLuce[9]
-        #### Chiamata alla funzione di scrittura delle modalita luci su PLC ####
-        applyHmiLampModal()
-        #### Chiamata alla funzione di lettura dei time-out automatici ####
-        timeOut = []
-        timeOut = dbInterface.readLampAutoTimeOut(data_commands)
-        luceVeranda.timeOut = timeOut[0] * 1000
-        luceCucina.timeOut = timeOut[1] * 1000
-        luceAntibagno.timeOut = timeOut[2] * 1000
-        luceSalaLibreria.timeOut = timeOut[3] * 1000
-        luceLetto.timeOut = timeOut[4] * 1000
-        luceCorridoio.timeOut = timeOut[5] * 1000
-        luceSala.timeOut = timeOut[6] * 1000
-        luceIngresso.timeOut = timeOut[7] * 1000
-        luceBagno.timeOut = timeOut[8] * 1000
-        luceFuoriDavanti.timeOut = timeOut[9] * 1000
-        #### Chiamata alla funzione di scrittura timeOut sul PLC ####
-        writeToPLC.writeLampTimeOutToPLC(lgxPLC,timeOut)
+        readAndApplyCommands()
 
     
     if test_nuovo_configurazione == 1:
@@ -187,7 +191,13 @@ def readDataFromPLC():
         dbInterface.writeLampModalState(data_store,modalita[0],modalita[1],modalita[2],modalita[3],modalita[4],modalita[5],modalita[6],modalita[7],modalita[8],modalita[9],modalita[10])
         dbInterface.saveModify(data_store)
     checkSums.luciModalitaOld = checkSums.luciModalita
-    
+
+def memorizzaEvento(evento):
+    systemClock.letturaOrologio()
+    timeStamp = systemClock.lettura
+    EventDatabase.inserisciEvento(evento,timeStamp)
+    EventDatabase.salva_dati()
+
 def oneSecondInterrupt():
     print "Funzione di interrupt ad 1sec."
     secondCounter.counter = secondCounter.counter + 1
@@ -209,12 +219,30 @@ def oneSecondInterrupt():
 #### INIZIALIZZAZIONE ####
 ##########################
 print 'START CICLO DI INIZIALIZZAZIONE'
+##############################################
+#### INIZIALIZZAZIONE OROLOGIO DI SISTEMA ####
+##############################################
+try:
+    print ("INIZIALIZZAZIONE OROLOGIO DI SISTEMA")
+    systemClock = orologio()
+    systemClock.inizializzazioneOrologio()
+except:
+    print "ERRORE NELLA INIZIALIZZAZIONE DELL'OROLOGIO"
 #########################################################
 #### INIZIALIZZAZIONE CONNESSIONE AL DATABASE ERRORI ####
 #########################################################
 try:
     print 'CONNESSIONE AL DATABASE DEGLI ERRORI'
     ErrorDatabase = database_engine('/home/pi/db_imp_ele/error_store.db')
+except Exception,e:
+    print e
+#########################################################
+#### INIZIALIZZAZIONE CONNESSIONE AL DATABASE EVENTI ####
+#########################################################
+try:
+    print 'CONNESSIONE AL DATABASE DEGLI EVENTI'
+    EventDatabase = database_engine('/home/pi/db_imp_ele/event_store.db')
+    memorizzaEvento('AVVIO DEL SISTEMA')
 except Exception,e:
     print e
 #### INIZIALIZZAZIONE SYSTEM ####
@@ -291,6 +319,8 @@ except Exception,e:
     print e
 #### FINE CICLO INIZIALIZZAZIONE ####
 print 'Fine ciclo inizializzazione...'
+#### Lettura ed applicazione dei comandi ####
+readAndApplyCommands()
 
 tOne = Timer(1.0,oneSecondInterrupt)
 tOne.start()
