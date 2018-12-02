@@ -76,3 +76,7 @@ def writeLampTimeOutToPLC(PlcConnection,timeOut):
     PlcConnection.Write("i_stLuceSalaHmiCmds.diAutoTime",timeOut[6])
     PlcConnection.Write("i_stLuceSalaLibreriaHmiCmds.diAutoTime",timeOut[3])
     PlcConnection.Write("i_stLuceVerandaHmiCmds.iModeSel",timeOut[0])
+
+def writeGateCommands(PlcConnection,gateBig,gateSmall):
+    print 'Chiamata alla funzione di scrittura comandi cancello grande e piccolo'
+    PlcConnection.Write("i_xHMICancGrande",gateBig)

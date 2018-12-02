@@ -126,6 +126,11 @@ def readAndApplyCommands():
     luceFuoriDavanti.timeOut = timeOut[9] * 1000
     #### Chiamata alla funzione di scrittura timeOut sul PLC ####
     writeToPLC.writeLampTimeOutToPLC(lgxPLC,timeOut)
+    #### Chiamata alla funzione di lettura comandi cancelli ####
+    gateCommands = []
+    gateCommands = dbInterface.readGateCommands(data_commands)
+    #### Chiamata alla funzione di scrittura comandi cancelli sul PLC ####
+    writeToPLC.writeGateCommands(lgxPLC,gateCommands[0],gateCommands[1])
 
 def checkForNew():
     update = dbInterface.checkForNewCommands(data_commands)

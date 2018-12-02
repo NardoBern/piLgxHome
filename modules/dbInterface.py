@@ -101,6 +101,15 @@ def readLampAutoTimeOut(databaseObj):
         timeOut.append(row[0])
     return timeOut
 
+## Funzione di lettura comandi cancelli ##
+def readGateCommands(databaseObj):
+    print 'Leggo i comandi dei cancelli'
+    nuovi_gateCommands = databaseObj.lettura_dato_multiplo('giardino', 'COMANDO')
+    gateCommands = []
+    for row in nuovi_gateCommands:
+        gateCommands.append(row[0])
+    return gateCommands
+
 ## Funzione di scrittura modalita riscaldamento ##
 def writeHeatModalState(databaseObj,zonaBagno,zonaNotte,zonaGiorno):
     print 'RISCALDAMENTO BAGNO'
