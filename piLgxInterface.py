@@ -21,18 +21,40 @@ import cCheckSums
 
 def applyHmiLampCmds():
     print 'Chiamata alla funzione applyHmiLampCmds...'
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd",luceAntibagno.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",luceBagno.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",luceCantina.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",luceCorridoio.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",luceCucina.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",luceFuoriDavanti.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",luceIngresso.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",luceLetto.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",luceSala.manHmiCmd)
-    print "Luce Sala Libreria = True..."
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd",luceSalaLibreria.manHmiCmd)
-    writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",luceVeranda.manHmiCmd)
+    if luceAntibagno.manHmiCmd != luceAntibagno.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceAntiBagnoHmiCmds.xManCmd", luceAntibagno.manHmiCmd)
+    if luceBagno.manHmiCmd != luceBagno.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceBagnoHmiCmds.xManCmd",luceBagno.manHmiCmd)
+    if luceCantina.manHmiCmd != luceCantina.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCantinaHmiCmds.xManCmd",luceCantina.manHmiCmd)
+    if luceCorridoio.manHmiCmd != luceCorridoio.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCorridoioHmiCmds.xManCmd",luceCorridoio.manHmiCmd)
+    if luceCucina.manHmiCmd != luceCucina.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCucinaHmiCmds.xManCmd",luceCucina.manHmiCmd)
+    if luceFuoriDavanti.manHmiCmd != luceFuoriDavanti.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceFuoriDavantiHmiCmds.xManCmd",luceFuoriDavanti.manHmiCmd)
+    if luceIngresso.manHmiCmd != luceIngresso.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceIngressoHmiCmds.xManCmd",luceIngresso.manHmiCmd)
+    if luceLetto.manHmiCmd != luceLetto.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceCameraLettoHmiCmds.xManCmd",luceLetto.manHmiCmd)
+    if luceSala.manHmiCmd != luceSala.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaHmiCmds.xManCmd",luceSala.manHmiCmd)
+    if luceSalaLibreria.manHmiCmd != luceSalaLibreria.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceSalaLibreriaHmiCmds.xManCmd", luceSalaLibreria.manHmiCmd)
+    if luceVeranda.manHmiCmd != luceVeranda.manHmiCmdOld:
+        writeToPLC.writeLampManCmdToPLC(lgxPLC,"i_stLuceVerandaHmiCmds.xManCmd",luceVeranda.manHmiCmd)
+    luceAntibagno.manHmiCmdOld = luceAntibagno.manHmiCmd
+    luceBagno.manHmiCmdOld = luceBagno.manHmiCmd
+    luceCantina.manHmiCmdOld = luceCantina.manHmiCmd
+    luceCorridoio.manHmiCmdOld = luceCorridoio.manHmiCmd
+    luceCucina.manHmiCmdOld = luceCucina.manHmiCmd
+    luceFuoriDavanti.manHmiCmdOld = luceFuoriDavanti.manHmiCmd
+    luceIngresso.manHmiCmdOld = luceIngresso.manHmiCmd
+    luceLetto.manHmiCmdOld = luceLetto.manHmiCmd
+    luceSala.manHmiCmdOld = luceSala.manHmiCmd
+    luceSalaLibreria.manHmiCmdOld = luceSalaLibreria.manHmiCmd
+    luceVeranda.manHmiCmdOld = luceVeranda.manHmiCmd
+
 
 def applyHmiLampModal():
     print 'Chiamata alla funzione applyHmiLampModal...'
@@ -187,6 +209,17 @@ def readDataFromPLC():
     if checkSums.luciStati != checkSums.luciStatiOld:
         dbInterface.writeLampState(data_store,stati[0],stati[1],stati[2],stati[3],stati[4],stati[5],stati[6],stati[7],stati[8],stati[9],stati[10])
         dbInterface.saveModify(data_store)
+        luceVeranda.stato = stati[0]
+        luceCantina.stato = stati[1]
+        luceCucina.stato = stati[2]
+        luceSala.stato = stati[3]
+        luceIngresso.stato = stati[4]
+        luceCorridoio.stato = stati[5]
+        luceAntibagno.stato = stati[6]
+        luceBagno.stato = stati[7]
+        luceSalaLibreria.stato = stati[8]
+        luceLetto.stato = stati[9]
+        luceFuoriDavanti.stato = stati[10]
     checkSums.luciStatiOld = checkSums.luciStati
     modalita = []
     modalita = readFromPLC.readLampModalState(lgxPLC)
