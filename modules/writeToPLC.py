@@ -1,9 +1,12 @@
 #### Modulo per l'interfacciamento in scrittura verso il PLC ####
 
-def updateTime(PlcConnection,ora,minuti,secondi):
+def updateTime(PlcConnection,ora,minuti,secondi, giorno, mese, anno):
     PlcConnection.Write("i_stData.diSec",secondi)
     PlcConnection.Write("i_stData.diMin",minuti)
     PlcConnection.Write("i_stData.diOra",ora)
+    PlcConnection.Write("i_stData.diGiorno",giorno)
+    PlcConnection.Write("i_stData.diMese",mese)
+    PlcConnection.Write("i_stData.diAnno",anno)
 
 def updateWatchDog(PlcConnection, watchdog):
     PlcConnection.Write("i_stHmiSystemVar.iWatchDog",watchdog)

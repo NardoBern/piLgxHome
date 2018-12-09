@@ -242,7 +242,7 @@ def oneSecondInterrupt():
     print secondCounter.counter
     writeToPLC.updateWatchDog(lgxPLC,system.updateWatchDog(lgxPLC.Read("o_stSystemVar.iHmiWdCounter")))
     system.updateTime()
-    writeToPLC.updateTime(lgxPLC,system.ora,system.minuto,system.secondo)
+    writeToPLC.updateTime(lgxPLC,system.ora,system.minuto,system.secondo,system.giorno,system.mese,system.anno)
     if secondCounter.counter > 5:
         print "Funzione di interrupt a 5 sec."
         print "Controllo se vi sono nuovi comandi..."
